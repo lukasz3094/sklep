@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Kajak",
+      "category": "Sporty wodne",
+      "description": "Kajak dla jednej osoby",
+      "price": 275
+    },
+    {
+      "id": 2,
+      "name": "Kamizelka ratunkowa",
+      "category": "Sporty wodne",
+      "description": "Skuteczna i modna",
+      "price": 48.95
+    },
+    {
+      "id": 3,
+      "name": "Piłka nożna",
+      "category": "Piłka nożna",
+      "description": "Zaakceptowane przez federację pod względem wagi i wymiarów",
+      "price": 275
+    },
+    {
+      "id": 4,
+      "name": "Szachownica",
+      "category": "Szachy",
+      "description": "Zabawa dla całej rodziny",
+      "price": 75
+    },
+    {
+      "name": "elo",
+      "description": "jd",
+      "category": "Szachy",
+      "price": "1",
+      "id": 5
+    }
+  ],
+  "categories": [
+    "Sporty wodne",
+    "Piłka nożna",
+    "Szachy"
+  ],
+  "orders": [
+    {
+      "name": "e",
+      "email": "e@f.fe",
+      "address": "e",
+      "city": "e",
+      "zip": "e",
+      "cartLines": [
+        {
+          "product": {
+            "id": 1,
+            "name": "Kajak",
+            "category": "Sporty wodne",
+            "description": "Kajak dla jednej osoby",
+            "price": 275
+          },
+          "quantity": 1
+        }
+      ],
+      "id": 1,
+      "shipped": false
+    }
+  ]
+}
