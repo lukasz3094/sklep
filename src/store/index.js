@@ -3,7 +3,7 @@ import Axios from "axios"
 import CartModule from "./cart"
 import OrdersModule from "./orders"
 import AuthModule from "./auth"
-const baseUrl = "/api"
+const baseUrl = "http://localhost:3500"
 const productsUrl = `${baseUrl}/products`
 const categoriesUrl = `${baseUrl}/categories`
  
