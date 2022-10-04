@@ -6,132 +6,132 @@ import AuthModule from "./auth"
 const baseUrl = "http://localhost:3500"
 const productsUrl = `${baseUrl}/products`
 const categoriesUrl = `${baseUrl}/categories`
- 
+
 export default createStore({
-  strict: false,
-  modules: { cart: CartModule, orders: OrdersModule, auth: AuthModule },
-  state: {
-    categoriesData: [],
-    currentPage: 1,
-    pageSize: 4,
-    currentCategory: "Wszystkie",
-    pages: [],
-    serverPageCount: 0,
-    searchTerm: "",
-    showSearch: false
-  },
-  getters: {
-    processedProducts: (state) => {
-        return state.pages[state.currentPage]
-    },
-    pageCount: (state) => state.serverPageCount,
-    categories: state => ["Wszystkie", ...state.categoriesData],
-    productById: (state) => (id) => {
-      return state.pages[state.currentPage].find(p => p.id == id)
-    }
-  },
-  mutations: {
-    _setCurrentPage(state, page) {
-        state.currentPage = page
-    },
-    _setPageSize(state, size) {
-        state.pageSize = size
-        state.currentPage = 1
-    },
-    _setCurrentCategory(state, category) {
-        state.currentCategory = category
-        state.currentPage = 1
-    },
-    addPage(state, page) {
-      for (let i = 0; i < page.pageCount; i++) {
-        state.pages[page.number] = page.data.slice(i * state.pageSize, 
-            (i * state.pageSize) + state.pageSize)
-      }
-    },
-    clearPages(state) {
-      state.pages.splice(0, state.pages.length)
-    },
-    setCategories(state, categories) {
-      state.categoriesData = categories
-    },
-    setPageCount(state, count) {
-      state.serverPageCount = Math.ceil(Number(count) / state.pageSize)
-    },
-    setShowSearch(state, show) {
-      state.showSearch = show
-    },
-    setSearchTerm(state, term) {
-      state.searchTerm = term
-      state.currentPage = 1
-    },
-    _addProduct(state, product) {
-      state.pages[state.currentPage].unshift(product)
-    },
-    _updateProduct(state, product) {
-      let page = state.pages[state.currentPage]
-      let index = page.findIndex(p => p.id == product.id)
-      state.pages[state.currentPage][index] = product
-    }
-  },
-  actions: {
-    async getData(context) {
-      await context.dispatch("getPage", 1)
-      context.commit("setCategories", (await Axios.get(categoriesUrl)).data)
-    },
-    async getPage(context, getPageCount = 1) {
-      let url = `${productsUrl}?_page=${context.state.currentPage}`
-        + `&_limit=${context.state.pageSize * getPageCount}`
-      if (context.state.currentCategory != "Wszystkie") {
-        url += `&category=${context.state.currentCategory}`
-      }
-      if (context.state.searchTerm != "") {
-        url += `&q=${context.state.searchTerm}`
-      }
-      let response = await Axios.get(url)
-      context.commit("setPageCount", response.headers["x-total-count"])
-      context.commit("addPage", { number: context.state.currentPage,
-          data: response.data, pageCount: getPageCount })
-    },
-    setCurrentPage(context, page) {
-      context.commit("_setCurrentPage", page)
-      if (!context.state.pages[page]) {
-        context.dispatch("getPage")
-      }
-    },
-    setPageSize(context, size) {
-      context.commit("clearPages")
-      context.commit("_setPageSize", size)
-      context.dispatch("getPage")
-    },
-    setCurrentCategory(context, category) {
-      context.commit("clearPages")
-      context.commit("_setCurrentCategory", category)
-      context.dispatch("getPage")
-    },
-    search(context, term) {
-      context.commit("setSearchTerm", term)
-      context.commit("clearPages")
-      context.dispatch("getPage")
-    },
-    clearSearchTerm(context) {
-      context.commit("setSearchTerm", "")
-      context.commit("clearPages")
-      context.dispatch("getPage")
-    },
-    async addProduct(context, product) {
-      let data = (await context.getters.authenticatedAxios.post(productsUrl,
-        product)).data
-      product.id = data.id
-      this.commit("_addProduct", product)
-    },
-    async removeProduct(context, product) {
-      await context.getters.authenticatedAxios.delete(`${productsUrl}/${product.id}`)
-      context.commit("clearPages")
-      context.dispatch("getPage", 1)
-    },
-    async updateProduct(context, product) {
-      await context.getters.authenticatedAxios.put(`${productsUrl}/${product.id}`, product)
-      this.commit("_updateProduct", product)
-    }
-  }
+strict: false,
+modules: { cart: CartModule, orders: OrdersModule, auth: AuthModule },
+state: {
+	categoriesData: [],
+	currentPage: 1,
+	pageSize: 4,
+	currentCategory: "Wszystkie",
+	pages: [],
+	serverPageCount: 0,
+	searchTerm: "",
+	showSearch: false
+},
+getters: {
+	processedProducts: (state) => {
+		return state.pages[state.currentPage]
+	},
+	pageCount: (state) => state.serverPageCount,
+	categories: state => ["Wszystkie", ...state.categoriesData],
+	productById: (state) => (id) => {
+	return state.pages[state.currentPage].find(p => p.id == id)
+	}
+},
+mutations: {
+	_setCurrentPage(state, page) {
+		state.currentPage = page
+	},
+	_setPageSize(state, size) {
+		state.pageSize = size
+		state.currentPage = 1
+	},
+	_setCurrentCategory(state, category) {
+		state.currentCategory = category
+		state.currentPage = 1
+	},
+	addPage(state, page) {
+	for (let i = 0; i < page.pageCount; i++) {
+		state.pages[page.number] = page.data.slice(i * state.pageSize, 
+			(i * state.pageSize) + state.pageSize)
+	}
+	},
+	clearPages(state) {
+		state.pages.splice(0, state.pages.length)
+	},
+	setCategories(state, categories) {
+		state.categoriesData = categories
+	},
+	setPageCount(state, count) {
+		state.serverPageCount = Math.ceil(Number(count) / state.pageSize)
+	},
+	setShowSearch(state, show) {
+		state.showSearch = show
+	},
+	setSearchTerm(state, term) {
+		state.searchTerm = term
+		state.currentPage = 1
+	},
+	_addProduct(state, product) {
+		state.pages[state.currentPage].unshift(product)
+	},
+	_updateProduct(state, product) {
+		let page = state.pages[state.currentPage]
+		let index = page.findIndex(p => p.id == product.id)
+		state.pages[state.currentPage][index] = product
+	}
+},
+actions: {
+	async getData(context) {
+		await context.dispatch("getPage", 1)
+		context.commit("setCategories", (await Axios.get(categoriesUrl)).data)
+	},
+	async getPage(context, getPageCount = 1) {
+		let url = `${productsUrl}?_page=${context.state.currentPage}`
+			+ `&_limit=${context.state.pageSize * getPageCount}`
+		if (context.state.currentCategory != "Wszystkie") {
+			url += `&category=${context.state.currentCategory}`
+		}
+		if (context.state.searchTerm != "") {
+			url += `&q=${context.state.searchTerm}`
+		}
+		let response = await Axios.get(url)
+		context.commit("setPageCount", response.headers["x-total-count"])
+		context.commit("addPage", { number: context.state.currentPage,
+		data: response.data, pageCount: getPageCount })
+	},
+	setCurrentPage(context, page) {
+		context.commit("_setCurrentPage", page)
+		if (!context.state.pages[page]) {
+			context.dispatch("getPage")
+		}
+	},
+	setPageSize(context, size) {
+		context.commit("clearPages")
+		context.commit("_setPageSize", size)
+		context.dispatch("getPage")
+	},
+	setCurrentCategory(context, category) {
+		context.commit("clearPages")
+		context.commit("_setCurrentCategory", category)
+		context.dispatch("getPage")
+	},
+	search(context, term) {
+		context.commit("setSearchTerm", term)
+		context.commit("clearPages")
+		context.dispatch("getPage")
+	},
+	clearSearchTerm(context) {
+		context.commit("setSearchTerm", "")
+		context.commit("clearPages")
+		context.dispatch("getPage")
+	},
+	async addProduct(context, product) {
+		let data = (await context.getters.authenticatedAxios.post(productsUrl,
+			product)).data
+		product.id = data.id
+		this.commit("_addProduct", product)
+	},
+	async removeProduct(context, product) {
+		await context.getters.authenticatedAxios.delete(`${productsUrl}/${product.id}`)
+		context.commit("clearPages")
+		context.dispatch("getPage", 1)
+	},
+	async updateProduct(context, product) {
+		await context.getters.authenticatedAxios.put(`${productsUrl}/${product.id}`, product)
+		this.commit("_updateProduct", product)
+	}
+}
 })

@@ -1,5 +1,5 @@
 import Axios from "axios"
-const ORDERS_URL = "/api/orders"
+const ORDERS_URL = "http://localhost:3500/orders"
 export default {
     state: {
         orders: []
